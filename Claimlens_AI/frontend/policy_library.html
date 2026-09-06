@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Policy Library & RAG Vector Search — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+      <li><a href="/new-claim" class="nav-link">+ New Claim</a></li>
+      <li><a href="/policy-library" class="nav-link active">Policy Library</a></li>
+      <li><a href="/profile" class="nav-link">Investigator</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.2rem; font-weight: 800;">Motor Policy Knowledge Base & RAG Index</h1>
+      <p style="color: var(--text-secondary);">Query insurance clauses using local TF-IDF normalized vector cosine similarity.</p>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; gap: 1rem;">
+        <input type="text" id="policy-search" placeholder="Type query e.g. 'commercial carriage exclusion', 'police fir requirement', 'divider impact'..." style="flex: 1;" onkeydown="if(event.key==='Enter') executePolicySearch()">
+        <button class="btn-primary" onclick="executePolicySearch()">Vector Retrieve →</button>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <h3 style="font-size: 1.2rem; font-weight: 700;">Retrieved Policy Clauses</h3>
+      <span id="retrieval-method-tag" class="badge" style="background: rgba(59, 130, 246, 0.15); color: var(--primary);">Vector Similarity</span>
+    </div>
+
+    <div id="clauses-grid" class="grid-3" style="margin-top: 0;">
+      <div style="color: var(--text-muted);">Loading policy clauses...</div>
+    </div>
+  </main>
+
+  <script src="/static/app.js"></script>
+  <script>
+    async function executePolicySearch() {
+      const q = document.getElementById('policy-search').value.trim();
+      const endpoint = q ? `/api/policy-clauses?query=${encodeURIComponent(q)}` : '/api/policy-clauses';
+      try {
+        const res = await fetchAPI(endpoint);
+        if (res.status === 'success') {
+          renderClauses(res.clauses);
+        }
+      } catch (err) {
+        showToast('Policy retrieval error', 'error');
+      }
+    }
+
+    function renderClauses(clauses) {
+      const grid = document.getElementById('clauses-grid');
+      if (!clauses || clauses.length === 0) {
+        grid.innerHTML = '<div style="color:var(--text-muted);">No clauses matched the vector query.</div>';
+        return;
+      }
+
+      grid.innerHTML = clauses.map(c => `
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span class="badge" style="background: rgba(255,255,255,0.06);">${c.clause_code}</span>
+              <span class="badge badge-approved" style="font-size: 0.72rem;">Score: ${c.similarity}</span>
+            </div>
+            <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem;">${c.title}</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.4;">${c.full_text}</p>
+          </div>
+          <div style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+            <strong>Conditions:</strong> ${c.conditions || 'General terms'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => executePolicySearch());
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+CAR DOCTOR GARAGE - REPAIR ESTIMATE
+Job Card: 5541
+Date: 15/08/2026
+Vehicle No: MH-02-CB-1234
+Total Repair Estimate: INR 95,000.00
+Rear bumper, boot lid, tail lamps, and rear quarter panel overhaul.

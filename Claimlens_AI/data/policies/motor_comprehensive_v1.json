@@ -1,0 +1,50 @@
+[
+  {
+    "clause_code": "SEC-01-OD-COV",
+    "title": "Own Damage Coverage & Accidental Loss",
+    "category": "Coverage",
+    "full_text": "The Company will indemnify the Insured against loss or damage to the vehicle insured and/or its accessories whilst thereon by accidental external means, collision, overturning, fire, external explosion, self-ignition, lightning, frost, or malicious act.",
+    "conditions": "Vehicle must be in charge of an authorized driver holding a valid permanent or learner's driving license at the time of the event. Damage must be directly attributable to the stated external impact.",
+    "keywords": "collision accidental damage impact overturning external fire repair estimate dent bumper bodywork"
+  },
+  {
+    "clause_code": "SEC-02-DOC-MAND",
+    "title": "Mandatory Evidence and Claim Documentation",
+    "category": "Documentation",
+    "full_text": "Every claim for Own Damage or Third Party collision requires mandatory submission of: 1) Duly completed and signed Motor Claim Form; 2) Police First Information Report (FIR) or Police GD entry in case of major collision, third-party bodily injury, or disputed circumstances; 3) Itemized Garage Repair Estimate; 4) Valid Driving License of driver at wheel; 5) Original Certificate of Vehicle Registration (RC). Failure to provide mandatory evidence warrants request for missing information or withholding claim settlement.",
+    "conditions": "All mandatory documents must correlate with the insured vehicle registration, date, time, and incident location.",
+    "keywords": "mandatory documents fir police report driving license registration certificate rc repair estimate bill"
+  },
+  {
+    "clause_code": "SEC-03-EXCL-COMM",
+    "title": "Limitation as to Use — Commercial Carriage Exclusion",
+    "category": "Exclusion",
+    "full_text": "The Company shall not be liable under this policy in respect of any accidental loss or damage caused, sustained, or incurred whilst the vehicle is being used otherwise than in accordance with the 'Limitations as to Use'. Under a Private Car Package Policy, any use for hire or reward, commercial carriage of passengers, taxi operations, or commercial carriage of goods is strictly excluded from coverage.",
+    "conditions": "Use of private vehicle as commercial transport, paid cab, or rental ride blocks claim admissibility under Section 3.",
+    "keywords": "commercial use hire reward passenger carriage taxi cab fare payment unauthorized usage exclusion"
+  },
+  {
+    "clause_code": "SEC-04-EXCL-INTOX",
+    "title": "Intoxication and Unauthorized Driving Exclusion",
+    "category": "Exclusion",
+    "full_text": "The Company shall not be liable to make any payment in respect of any accidental loss or damage suffered whilst the insured vehicle is being driven by or is for the purpose of being driven by him/her in the charge of any person under the influence of intoxicating liquor or drugs, or by any person who is not duly licensed.",
+    "conditions": "Police FIR or medical breathalyzer findings confirming alcohol or narcotic intoxication blocks all coverage.",
+    "keywords": "intoxication alcohol drunk driving drugs breathalyzer unauthorized unlicensed driver"
+  },
+  {
+    "clause_code": "SEC-05-NOTICE-DELAY",
+    "title": "Notice of Accident and Cross-Document Consistency",
+    "category": "Consistency",
+    "full_text": "Notice of any accident or loss must be given to the Company immediately upon occurrence. Every letter, claim, writ, summons, or process must be forwarded to the Company immediately. Any material contradiction between the Claim Form incident date and official Police FIR or garage intake records requires immediate claim escalation for forensic verification.",
+    "conditions": "Discrepancy in accident date or location across official documents warrants claim escalation to Special Investigation Unit (SIU).",
+    "keywords": "incident date fir date notice delay contradiction mismatch police record timeline discrepancy"
+  },
+  {
+    "clause_code": "SEC-06-DEDUCT-VAL",
+    "title": "Compulsory Deductible & Sum Insured Ceiling",
+    "category": "Deductible",
+    "full_text": "Claims payable are subject to the compulsory deductible stipulated in the policy schedule. In no case shall the liability of the Company exceed the Insured Declared Value (IDV) of the vehicle. If the estimated repair cost exceeds 75% of IDV, the claim shall be treated as a Constructive Total Loss (CTL).",
+    "conditions": "Repair estimate must not exceed Insured Declared Value unless total loss procedures are initiated.",
+    "keywords": "deductible sum insured idv total loss excess repair amount garage estimate ceiling"
+  }
+]

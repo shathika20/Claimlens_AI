@@ -1,0 +1,7 @@
+MOTOR CLAIM REPORT
+Claim Ref: CLM-2026-006
+Policy Number: POL-2026-TEST-77
+Vehicle Number: KA-01-EQ-9988
+Date of Loss: 25/08/2026
+Estimated Repair Cost: INR 38,000.00
+Details: Minor left side bumper scrape against pillar.

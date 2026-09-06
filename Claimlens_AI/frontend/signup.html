@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investigator Registration — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/login" class="nav-link">Sign In</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="max-width: 460px; margin-top: 3rem;">
+    <div class="card" style="padding: 2.5rem 2rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.6rem; font-weight: 800;">Register Investigator</h2>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">Create an insurance auditor credential</p>
+      </div>
+
+      <form onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label for="full_name">Full Legal Name</label>
+          <input type="text" id="full_name" required placeholder="e.g. Vikram Malhotra">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Work Email</label>
+          <input type="email" id="email" required placeholder="name@insurer.com">
+        </div>
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required placeholder="e.g. v_malhotra">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="••••••••">
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+          Register Account →
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+        Already have an investigator profile? <a href="/login" style="color: var(--primary); text-decoration: none;">Sign In</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/app.js"></script>
+  <script>
+    async function handleSignup(e) {
+      e.preventDefault();
+      const full_name = document.getElementById('full_name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      try {
+        const res = await fetchAPI('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_name, email, username, password, role: 'Claims Auditor' })
+        });
+        if (res.status === 'success') {
+          showToast('Account registered successfully! Please log in.', 'success');
+          setTimeout(() => { window.location.href = '/login'; }, 700);
+        }
+      } catch (err) {
+        showToast(err.message || 'Registration failed', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

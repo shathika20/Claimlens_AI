@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investigator Dashboard — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link active">Dashboard</a></li>
+      <li><a href="/new-claim" class="nav-link">+ New Claim</a></li>
+      <li><a href="/policy-library" class="nav-link">Policy Library</a></li>
+      <li><a href="/profile" class="nav-link">Sarah Jenkins (Senior SIU Lead)</a></li>
+    </ul>
+  </nav>
+
+  <!-- SPACIOUS MAIN DASHBOARD CONTAINER -->
+  <main class="dashboard-container">
+    
+    <!-- DASHBOARD HERO HEADER -->
+    <div class="dashboard-hero-header">
+      <div>
+        <div class="system-status-pill">
+          <span class="status-pulse-dot"></span>
+          NexusTiQ 24 // SIU Motor OD Intelligence Engine
+        </div>
+        <h1 class="dashboard-title">Claims Investigation Command Center</h1>
+        <p class="dashboard-subtitle">
+          Real-time evidence health analytics, cross-document contradiction triage, vector policy RAG, and deterministic decision support.
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+        <a href="/policy-library" class="btn-outline" style="padding: 0.7rem 1.25rem; font-size: 0.92rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          Policy Library
+        </a>
+        <a href="/new-claim" class="btn-primary" style="padding: 0.7rem 1.4rem; font-size: 0.92rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Register New Claim
+        </a>
+      </div>
+    </div>
+
+    <!-- SPACIOUS KPI STATS GRID -->
+    <div class="stats-grid-spacious">
+      <div class="stat-card-spacious" style="border-top: 3px solid var(--primary);">
+        <div class="stat-header">
+          <span class="stat-label">Total Claims Dossiers</span>
+          <div class="stat-icon-wrap" style="color: #60a5fa;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" id="stat-total">--</div>
+        <div class="stat-caption">Registered claim archives in database</div>
+      </div>
+
+      <div class="stat-card-spacious" style="border-top: 3px solid var(--status-approved);">
+        <div class="stat-header">
+          <span class="stat-label">Approved (Clean Evidence)</span>
+          <div class="stat-icon-wrap" style="color: var(--status-approved);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" style="color: var(--status-approved);" id="stat-approved">--</div>
+        <div class="stat-caption">Verified compliant against policy clauses</div>
+      </div>
+
+      <div class="stat-card-spacious" style="border-top: 3px solid var(--status-escalated);">
+        <div class="stat-header">
+          <span class="stat-label">Escalated (SIU Triage)</span>
+          <div class="stat-icon-wrap" style="color: var(--status-escalated);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" style="color: var(--status-escalated);" id="stat-escalated">--</div>
+        <div class="stat-caption">High-risk chronological or factual conflicts</div>
+      </div>
+
+      <div class="stat-card-spacious" style="border-top: 3px solid var(--status-rejected);">
+        <div class="stat-header">
+          <span class="stat-label">Rejected (Policy Exclusions)</span>
+          <div class="stat-icon-wrap" style="color: var(--status-rejected);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" style="color: var(--status-rejected);" id="stat-rejected">--</div>
+        <div class="stat-caption">Commercial use or intoxication exclusions</div>
+      </div>
+    </div>
+
+    <!-- INVESTIGATION PRIORITY QUEUE RADAR -->
+    <div class="priority-radar-card">
+      <div class="priority-radar-header">
+        <div>
+          <div class="priority-radar-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            Special Investigation Unit (SIU) Priority Queue
+          </div>
+          <p class="priority-radar-sub">
+            Claims ranked by operational risk: critical cross-document contradictions, low evidence health, and policy exclusion triggers.
+          </p>
+        </div>
+        <span class="badge badge-risk-high" style="font-size: 0.82rem; padding: 0.4rem 0.9rem;">
+          ● URGENT INVESTIGATOR TRIAGE
+        </span>
+      </div>
+
+      <div class="priority-items-stack" id="priority-list">
+        <div style="color: var(--text-muted); font-size: 0.95rem; padding: 1.5rem; text-align: center;">
+          Scanning priority queue dossiers...
+        </div>
+      </div>
+    </div>
+
+    <!-- SPACIOUS TOOLBAR & FILTERS -->
+    <div class="dashboard-toolbar">
+      <div class="filter-pills-group">
+        <button class="filter-pill-btn active" data-status="" onclick="setFilter('')">
+          All Claims <span class="filter-count-badge" id="count-all">0</span>
+        </button>
+        <button class="filter-pill-btn" data-status="ESCALATED" onclick="setFilter('ESCALATED')">
+          ⚡ Escalated <span class="filter-count-badge" id="count-escalated">0</span>
+        </button>
+        <button class="filter-pill-btn" data-status="REQUEST INFO" onclick="setFilter('REQUEST INFO')">
+          ⚠ Request Info <span class="filter-count-badge" id="count-request-info">0</span>
+        </button>
+        <button class="filter-pill-btn" data-status="APPROVED" onclick="setFilter('APPROVED')">
+          ✓ Approved <span class="filter-count-badge" id="count-approved">0</span>
+        </button>
+        <button class="filter-pill-btn" data-status="REJECTED" onclick="setFilter('REJECTED')">
+          ✕ Rejected <span class="filter-count-badge" id="count-rejected">0</span>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <!-- SORT DROPDOWN -->
+        <select id="sort-select" onchange="renderClaimsTable()" style="width: 220px; padding: 0.65rem 0.9rem; font-size: 0.88rem; background: rgba(10, 14, 23, 0.8); border: 1px solid rgba(255,255,255,0.12); border-radius: 9999px; color: #fff;">
+          <option value="risk-desc">Sort: Highest Risk First</option>
+          <option value="health-asc">Sort: Lowest Health First</option>
+          <option value="health-desc">Sort: Highest Health First</option>
+          <option value="amount-desc">Sort: Highest Claim Amount</option>
+          <option value="date-desc">Sort: Most Recent Incident</option>
+        </select>
+
+        <!-- SEARCH INPUT -->
+        <div class="search-input-wrapper">
+          <svg class="search-icon-inside" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" class="search-input-box" placeholder="Search claim ID, insured, vehicle plate..." oninput="renderClaimsTable()">
+        </div>
+      </div>
+    </div>
+
+    <!-- SPACIOUS CLAIMS TABLE -->
+    <div class="table-container-spacious">
+      <table class="spacious-table">
+        <thead>
+          <tr>
+            <th style="width: 140px;">Claim ID</th>
+            <th style="min-width: 260px;">Insured Person & Vehicle</th>
+            <th style="width: 130px;">Incident Date</th>
+            <th style="width: 140px;">Claim Amount</th>
+            <th style="width: 170px;">Evidence Health</th>
+            <th style="width: 120px;">Risk Level</th>
+            <th style="min-width: 180px;">AI Recommendation</th>
+            <th style="width: 150px;">Human Decision</th>
+            <th style="width: 140px;">Status</th>
+            <th style="width: 140px; text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="claims-tbody">
+          <tr>
+            <td colspan="10" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+              Loading verified claim dossier records...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+  <script>
+    let allClaims = [];
+    let currentFilter = '';
+
+    // Reason mapping for priority triage badges
+    const PRIORITY_FLAGS = {
+      'CLM-2026-003': '⚠️ 48-hr Date Contradiction (Claim Form vs Police FIR)',
+      'CLM-2026-004': '🚫 Commercial Carriage Exclusion (Ride-Hail Breach)',
+      'CLM-2026-005': '⚠️ Multi-Document Factual & Driver Contradictions',
+      'CLM-2026-002': '📋 Missing Mandatory Evidence (FIR & Registration Certificate)'
+    };
+
+    async function loadDashboard() {
+      try {
+        // 1. Fetch dashboard stats
+        const statsData = await fetchAPI('/api/dashboard-stats');
+        if (statsData.status === 'success') {
+          const s = statsData.stats;
+          document.getElementById('stat-total').innerText = s.total_claims;
+          document.getElementById('stat-approved').innerText = s.approved_count;
+          document.getElementById('stat-rejected').innerText = s.rejected_count;
+          document.getElementById('stat-escalated').innerText = s.escalated_count;
+
+          // Priority Queue Rendering
+          const qList = document.getElementById('priority-list');
+          if (s.priority_queue && s.priority_queue.length > 0) {
+            qList.innerHTML = s.priority_queue.map(item => {
+              const flagReason = PRIORITY_FLAGS[item.claim_id] || '⚠️ High Risk / Evidence Discrepancy Flagged';
+              return `
+                <div class="priority-row-item">
+                  <div class="priority-claim-info">
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+                        <a href="/evidence-review/${item.claim_id}" class="claim-id-link" style="font-size: 1.05rem;">
+                          ${item.claim_id}
+                        </a>
+                        <span class="mono-plate-tag">${item.vehicle_registration}</span>
+                      </div>
+                      <div style="font-size: 0.92rem; color: #fff; font-weight: 600;">
+                        ${item.insured_name}
+                      </div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+                        Incident Date: ${item.incident_date}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="flex: 1; min-width: 260px;">
+                    <div class="priority-flag-pill">
+                      ${flagReason}
+                    </div>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
+                      <div style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Health Score</div>
+                      <div style="font-weight: 800; font-size: 1rem; color: ${item.evidence_health_score > 70 ? 'var(--status-approved)' : (item.evidence_health_score > 40 ? 'var(--status-request-info)' : 'var(--status-rejected)')};">
+                        ${item.evidence_health_score} / 100
+                      </div>
+                    </div>
+
+                    ${getRiskBadge(item.risk_level)}
+                    ${getStatusBadge(item.current_status)}
+
+                    <a href="/evidence-review/${item.claim_id}" class="btn-primary" style="padding: 0.55rem 1.1rem; font-size: 0.85rem;">
+                      Investigate Dossier →
+                    </a>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            qList.innerHTML = `<div style="color:var(--text-secondary); padding: 1.5rem; text-align:center;">No high-risk or escalated claims currently require immediate triage.</div>`;
+          }
+        }
+
+        // 2. Fetch all claims
+        const claimsData = await fetchAPI('/api/claims');
+        if (claimsData.status === 'success') {
+          allClaims = claimsData.claims;
+          updateFilterCounts();
+          renderClaimsTable();
+        }
+      } catch (e) {
+        showToast('Failed to load dashboard data', 'error');
+      }
+    }
+
+    function updateFilterCounts() {
+      const counts = {
+        all: allClaims.length,
+        approved: 0,
+        rejected: 0,
+        requestInfo: 0,
+        escalated: 0
+      };
+
+      allClaims.forEach(c => {
+        const s = (c.current_status || '').toUpperCase();
+        if (s === 'APPROVED') counts.approved++;
+        else if (s === 'REJECTED') counts.rejected++;
+        else if (s.includes('REQUEST')) counts.requestInfo++;
+        else if (s === 'ESCALATED') counts.escalated++;
+      });
+
+      document.getElementById('count-all').innerText = counts.all;
+      document.getElementById('count-approved').innerText = counts.approved;
+      document.getElementById('count-rejected').innerText = counts.rejected;
+      document.getElementById('count-request-info').innerText = counts.requestInfo;
+      document.getElementById('count-escalated').innerText = counts.escalated;
+    }
+
+    function setFilter(status) {
+      currentFilter = status;
+      document.querySelectorAll('.filter-pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-status') === status);
+      });
+      renderClaimsTable();
+    }
+
+    function renderClaimsTable() {
+      const search = (document.getElementById('search-input').value || '').toLowerCase();
+      const sortMode = document.getElementById('sort-select').value;
+
+      // Filter
+      let filtered = allClaims.filter(c => {
+        const statusMatch = !currentFilter || 
+          (currentFilter === 'REQUEST INFO' ? (c.current_status || '').toUpperCase().includes('REQUEST') : (c.current_status || '').toUpperCase() === currentFilter);
+        
+        const searchMatch = !search ||
+          c.claim_id.toLowerCase().includes(search) ||
+          c.insured_name.toLowerCase().includes(search) ||
+          (c.vehicle_registration && c.vehicle_registration.toLowerCase().includes(search)) ||
+          (c.vehicle_model && c.vehicle_model.toLowerCase().includes(search));
+
+        return statusMatch && searchMatch;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        if (sortMode === 'risk-desc') {
+          const riskWeight = { 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1 };
+          return (riskWeight[b.risk_level] || 0) - (riskWeight[a.risk_level] || 0);
+        } else if (sortMode === 'health-asc') {
+          return a.evidence_health_score - b.evidence_health_score;
+        } else if (sortMode === 'health-desc') {
+          return b.evidence_health_score - a.evidence_health_score;
+        } else if (sortMode === 'amount-desc') {
+          return (b.claim_amount || 0) - (a.claim_amount || 0);
+        } else if (sortMode === 'date-desc') {
+          return (b.incident_date || '').localeCompare(a.incident_date || '');
+        }
+        return 0;
+      });
+
+      const tbody = document.getElementById('claims-tbody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" style="text-align:center; padding: 3.5rem; color: var(--text-muted); font-size: 1rem;">
+              No claims match your search or filter criteria.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const health = c.evidence_health_score || 0;
+        const healthColor = health > 70 ? 'var(--status-approved)' : (health > 40 ? 'var(--status-request-info)' : 'var(--status-rejected)');
+        const healthGrade = health > 70 ? 'HEALTHY' : (health > 40 ? 'MODERATE' : 'CRITICAL');
+
+        // AI Rec styling
+        let aiBadge = `<span style="color:var(--text-muted);">Pending</span>`;
+        if (c.ai_recommendation) {
+          const rec = c.ai_recommendation.toUpperCase();
+          let recColor = '#3b82f6';
+          let recBg = 'rgba(59, 130, 246, 0.12)';
+          if (rec === 'APPROVE') { recColor = '#10b981'; recBg = 'rgba(16, 185, 129, 0.12)'; }
+          else if (rec.includes('REJECT')) { recColor = '#ef4444'; recBg = 'rgba(239, 68, 68, 0.12)'; }
+          else if (rec.includes('REQUEST')) { recColor = '#f59e0b'; recBg = 'rgba(245, 158, 11, 0.12)'; }
+          else if (rec.includes('ESCALATE')) { recColor = '#a855f7'; recBg = 'rgba(168, 85, 247, 0.12)'; }
+
+          aiBadge = `<span class="badge" style="background:${recBg}; color:${recColor}; border: 1px solid ${recColor}40;">${c.ai_recommendation}</span>`;
+        }
+
+        // Human Decision pill
+        let humanTag = `<span style="color: var(--text-muted); font-size: 0.82rem;">Pending Review</span>`;
+        if (c.human_decision) {
+          humanTag = `<span style="font-size:0.83rem; font-weight:600; color:#cbd5e1; background:rgba(255,255,255,0.06); padding:0.25rem 0.55rem; border-radius:4px; border:1px solid rgba(255,255,255,0.1);">👤 ${c.human_decision}</span>`;
+        }
+
+        return `
+          <tr>
+            <td>
+              <a href="/evidence-review/${c.claim_id}" class="claim-id-link">
+                ${c.claim_id}
+              </a>
+            </td>
+            <td>
+              <div class="insured-vehicle-col">
+                <div class="insured-name-text">${c.insured_name}</div>
+                <div class="vehicle-subtext">
+                  <span>${c.vehicle_model}</span>
+                  <span class="mono-plate-tag">${c.vehicle_registration}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 500;">${c.incident_date}</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted);">${c.document_count} file(s) attached</div>
+            </td>
+            <td>
+              <div class="amount-text">${formatCurrency(c.claim_amount)}</div>
+            </td>
+            <td>
+              <div class="health-meter-cell">
+                <div class="health-bar-track">
+                  <div class="health-bar-fill" style="width: ${health}%; background: ${healthColor};"></div>
+                </div>
+                <div>
+                  <span class="health-score-num" style="color: ${healthColor};">${health}</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted); margin-left: 2px;">/100</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              ${getRiskBadge(c.risk_level)}
+            </td>
+            <td>
+              ${aiBadge}
+            </td>
+            <td>
+              ${humanTag}
+            </td>
+            <td>
+              ${getStatusBadge(c.current_status)}
+            </td>
+            <td style="text-align: right;">
+              <a href="/evidence-review/${c.claim_id}" class="action-review-btn">
+                Review Dossier →
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Keyboard shortcut '/' to jump to search box
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== document.getElementById('search-input')) {
+        e.preventDefault();
+        document.getElementById('search-input').focus();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

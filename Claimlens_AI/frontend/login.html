@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investigator Login — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/signup" class="nav-link">Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="max-width: 440px; margin-top: 4rem;">
+    <div class="card" style="padding: 2.5rem 2rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h2 style="font-size: 1.6rem; font-weight: 800;">Investigator Portal</h2>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">Sign in to access assigned claim files</p>
+      </div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required value="investigator">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required value="claimlens2026">
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+          Sign In to ClaimLens →
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+        Don't have an account? <a href="/signup" style="color: var(--primary); text-decoration: none;">Create Investigator ID</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/app.js"></script>
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      try {
+        const res = await fetchAPI('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (res.status === 'success') {
+          showToast('Authenticated! Opening workspace...', 'success');
+          setTimeout(() => { window.location.href = '/dashboard'; }, 500);
+        }
+      } catch (err) {
+        showToast(err.message || 'Login failed', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

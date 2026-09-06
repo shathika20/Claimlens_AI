@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Evidence Intelligence Hub — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+      <li><a href="/new-claim" class="nav-link">+ New Claim</a></li>
+      <li><a href="/policy-library" class="nav-link">Policy Library</a></li>
+      <li><a href="/profile" class="nav-link">Sarah Jenkins (Senior Investigator)</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <!-- BREADCRUMB & HEADER -->
+    <div style="margin-bottom: 1.5rem;">
+      <a href="/dashboard" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">← Back to Claims Dashboard</a>
+      
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <h1 style="font-size: 2.2rem; font-weight: 800;" id="claim-id-header">CLM-XXXX-XXX</h1>
+            <div id="claim-status-badge"></div>
+            <div id="claim-risk-badge"></div>
+          </div>
+          <p style="color: var(--text-secondary); margin-top: 0.25rem;" id="claim-summary-text">Loading claim dossier...</p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn-outline" onclick="triggerReanalysis()">⚡ Re-Run Analysis</button>
+          <button class="btn-primary" onclick="document.getElementById('add-docs-modal').style.display = 'block'">+ Upload Additional Files</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULATION NOTICE (Hidden by default, shown when scenario simulator active) -->
+    <div id="simulation-banner" class="simulation-banner" style="display: none;">
+      <div>
+        <span>🔮 SCENARIO SIMULATION ACTIVE — ORIGINAL CLAIM UNCHANGED IN DATABASE</span>
+        <div id="sim-details" style="font-size: 0.85rem; font-weight: normal; color: var(--text-primary); margin-top: 0.25rem;"></div>
+      </div>
+      <button class="btn-outline" style="color:#fff; border-color:rgba(255,255,255,0.4);" onclick="exitSimulation()">Reset to Original Claim</button>
+    </div>
+
+    <!-- EVIDENCE HEALTH SCORE WIDGET -->
+    <div class="health-score-container">
+      <div class="health-circle" id="health-score-circle">--</div>
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700;">Evidence Health Score</h3>
+          <span style="font-size: 0.85rem; color: var(--text-muted);" id="health-grade-text">Evaluating dossier...</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0.6rem;" id="health-explanation">
+          Calculated from cross-document consistency, required evidence completeness, policy alignment, and verified source citations.
+        </p>
+        <div style="display: flex; gap: 1.5rem; font-size: 0.82rem; color: var(--text-muted);" id="health-breakdown">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN WORKSPACE: TWO COLUMNS -->
+    <div class="review-grid">
+      <!-- LEFT COLUMN: EVIDENCE, CONTRADICTIONS, GAPS, POLICY -->
+      <div>
+        <!-- 1. CONTRADICTION DETECTIVE -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">
+            <span>🔍 Contradiction Detective</span>
+            <span class="badge badge-risk-high" id="contradiction-count-badge" style="display:none;">0 Conflicts</span>
+          </h2>
+          <div id="contradictions-container">
+            <div style="color: var(--text-muted); font-size: 0.9rem;">Checking evidence for inconsistencies...</div>
+          </div>
+        </div>
+
+        <!-- 2. EVIDENCE GAP FINDER -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">
+            <span>📋 Evidence Gap Finder</span>
+            <span class="badge badge-risk-medium" id="gap-count-badge" style="display:none;">0 Gaps</span>
+          </h2>
+          <div id="gaps-container">
+            <div style="color: var(--text-muted); font-size: 0.9rem;">Scanning document checklist...</div>
+          </div>
+        </div>
+
+        <!-- 3. EXTRACTED FACTS & SOURCE TRACEABILITY -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">
+            <span>📑 Extracted Facts & Source Citations</span>
+          </h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Extracted Value</th>
+                  <th>Source Document</th>
+                  <th>Page</th>
+                  <th>Confidence</th>
+                  <th>Raw Snippet Citation</th>
+                </tr>
+              </thead>
+              <tbody id="facts-tbody">
+                <tr><td colspan="6" style="color: var(--text-muted); text-align:center;">Extracting facts from documents...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. POLICY RAG ANALYSIS -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">
+            <span>⚖️ Policy Clause Analysis (Vector RAG)</span>
+          </h2>
+          <div id="policy-clauses-container">
+            <div style="color: var(--text-muted); font-size: 0.9rem;">Retrieving applicable policy clauses...</div>
+          </div>
+        </div>
+
+        <!-- 5. UPLOADED DOCUMENTS DOSSIER -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">
+            <span>📁 Uploaded Documents Dossier</span>
+          </h2>
+          <div id="docs-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="color: var(--text-muted); font-size: 0.9rem;">Loading files...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: DECISION SUPPORT & WORKBENCH -->
+      <div>
+        <!-- AI RECOMMENDATION CARD -->
+        <div class="card" style="margin-bottom: 1.5rem; border-top: 4px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700;">AI Recommendation</h2>
+            <div id="ai-rec-badge"></div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Confidence Level</div>
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);" id="ai-confidence">HIGH</div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Synthesized Reasoning</div>
+            <div style="font-size: 0.92rem; color: var(--text-secondary); background: rgba(0,0,0,0.25); padding: 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--primary);" id="ai-reasoning">
+              Analyzing claim evidence...
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--status-approved); font-weight: 600; margin-bottom: 0.35rem;">Supporting Evidence (For)</div>
+            <ul id="ai-evidence-for" style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.25rem;"></ul>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--status-rejected); font-weight: 600; margin-bottom: 0.35rem;">Opposing Evidence (Against)</div>
+            <ul id="ai-evidence-against" style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.25rem;"></ul>
+          </div>
+        </div>
+
+        <!-- WHAT WOULD CHANGE MY DECISION -->
+        <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(22, 32, 53, 0.95), rgba(17, 24, 39, 0.95)); border-color: rgba(59, 130, 246, 0.3);">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: #93c5fd;">
+            💡 What Would Change My Decision?
+          </h3>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Actionable counterfactuals derived from detected evidence gaps and contradictions:
+          </p>
+          <ul id="what-would-change-list" style="font-size: 0.85rem; color: var(--text-primary); padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li>Analyzing counterfactual scenarios...</li>
+          </ul>
+        </div>
+
+        <!-- HUMAN-IN-THE-LOOP DECISION CARD -->
+        <div class="card" style="margin-bottom: 1.5rem; border-top: 4px solid var(--accent-cyan);">
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">
+            👤 Human Investigator Decision
+          </h3>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Make an independent final judgment. The human decision is stored separately and never overwrites the AI recommendation.
+          </p>
+
+          <div id="existing-decision-display" style="margin-bottom: 1rem; display: none;">
+            <div style="background: rgba(0,0,0,0.3); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Recorded Human Decision:</span>
+                <span id="display-human-badge"></span>
+              </div>
+              <div style="font-size: 0.88rem; font-weight: 600;" id="display-human-investigator">Investigator: Sarah Jenkins</div>
+              <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;" id="display-human-reason"></div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;" id="display-human-timestamp"></div>
+            </div>
+          </div>
+
+          <form id="decision-form" onsubmit="handleDecisionSubmit(event)">
+            <div class="form-group">
+              <label>Select Decision *</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <label style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:0.6rem; border-radius:6px; cursor:pointer; font-size:0.85rem; text-align:center;">
+                  <input type="radio" name="human_decision_radio" value="Approve" required> Approve
+                </label>
+                <label style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); padding:0.6rem; border-radius:6px; cursor:pointer; font-size:0.85rem; text-align:center;">
+                  <input type="radio" name="human_decision_radio" value="Reject"> Reject
+                </label>
+                <label style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); padding:0.6rem; border-radius:6px; cursor:pointer; font-size:0.85rem; text-align:center;">
+                  <input type="radio" name="human_decision_radio" value="Request Info"> Request Info
+                </label>
+                <label style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); padding:0.6rem; border-radius:6px; cursor:pointer; font-size:0.85rem; text-align:center;">
+                  <input type="radio" name="human_decision_radio" value="Escalate"> Escalate
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="decision_reason">Primary Rationale</label>
+              <input type="text" id="decision_reason" placeholder="e.g. Concur with policy exclusion findings..." required>
+            </div>
+
+            <div class="form-group">
+              <label for="decision_notes">Investigator Field Notes (Optional)</label>
+              <textarea id="decision_notes" rows="2" placeholder="Additional audit remarks..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;" id="submit-decision-btn">
+              Record Official Human Decision
+            </button>
+          </form>
+        </div>
+
+        <!-- SCENARIO SIMULATOR WORKBENCH -->
+        <div class="card" style="margin-bottom: 1.5rem; border-top: 4px solid var(--accent-purple);">
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">
+            🔮 Scenario Simulator
+          </h3>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Hypothetically modify claim facts to see recalculated recommendation. The original claim database record remains 100% untouched.
+          </p>
+
+          <form id="simulator-form" onsubmit="handleScenarioSimulate(event)">
+            <div class="form-group">
+              <label for="sim_fact_field">Fact to Modify</label>
+              <select id="sim_fact_field" onchange="updateSimDefaultValue()">
+                <option value="incident_date">Incident Date</option>
+                <option value="commercial_use">Commercial Carriage Signal</option>
+                <option value="intoxication">Intoxication Signal</option>
+                <option value="claim_amount">Claim Amount</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="sim_fact_value">Hypothetical Value</label>
+              <input type="text" id="sim_fact_value" placeholder="e.g. 14/08/2026" required>
+            </div>
+
+            <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: var(--accent-purple); color: #d8b4fe;" id="sim-btn">
+              Simulate Scenario Outcome →
+            </button>
+          </form>
+        </div>
+
+        <!-- AUDIT TRAIL TIMELINE -->
+        <div class="card">
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">
+            📜 Complete Audit Trail
+          </h3>
+          <div id="audit-trail-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Loading audit events...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: ADD DOCUMENTS -->
+  <div id="add-docs-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; backdrop-filter: blur(4px);">
+    <div style="max-width: 550px; margin: 5rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.25rem;">Upload Claim Documents</h3>
+        <button onclick="document.getElementById('add-docs-modal').style.display = 'none'" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">✕</button>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.25rem;">
+        Select PDF, DOCX, TXT, or image files. They will be parsed and facts mined into the claim immediately.
+      </p>
+
+      <input type="file" id="modal-file-input" multiple style="margin-bottom: 1.5rem;">
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn-outline" onclick="document.getElementById('add-docs-modal').style.display = 'none'">Cancel</button>
+        <button class="btn-primary" onclick="uploadAdditionalFiles()">Upload & Analyze →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+  <script>
+    const claimId = window.location.pathname.split('/').pop();
+    let currentClaim = null;
+
+    async function loadClaimDossier() {
+      try {
+        const res = await fetchAPI(`/api/claims/${claimId}`);
+        if (res.status === 'success') {
+          currentClaim = res.claim;
+          renderClaimHeader(currentClaim);
+          renderHealthScore(currentClaim);
+          renderContradictions(currentClaim);
+          renderGaps(currentClaim);
+          renderExtractedFacts(currentClaim);
+          renderPolicyVerdicts(currentClaim);
+          renderAIRecommendation(currentClaim);
+          renderWhatWouldChange(currentClaim);
+          renderHumanDecision(currentClaim);
+          renderDocuments(currentClaim);
+          renderAuditTrail(currentClaim);
+        }
+      } catch (err) {
+        showToast('Error loading claim dossier', 'error');
+      }
+    }
+
+    function renderClaimHeader(c) {
+      document.getElementById('claim-id-header').innerText = c.claim_id;
+      document.getElementById('claim-status-badge').innerHTML = getStatusBadge(c.current_status);
+      document.getElementById('claim-risk-badge').innerHTML = getRiskBadge(c.risk_level);
+      document.getElementById('claim-summary-text').innerText = 
+        `Policy: ${c.policy_number} | Insured: ${c.insured_name} | Vehicle: ${c.vehicle_model} (${c.vehicle_registration}) | Incident: ${c.incident_date} | Amount: ${formatCurrency(c.claim_amount)}`;
+    }
+
+    function renderHealthScore(c) {
+      const score = c.evidence_health_score || 50;
+      const circle = document.getElementById('health-score-circle');
+      circle.innerText = score;
+
+      const color = score >= 75 ? 'var(--status-approved)' : (score >= 45 ? 'var(--status-request-info)' : 'var(--status-rejected)');
+      circle.style.borderColor = color;
+      circle.style.color = color;
+
+      const grade = score >= 75 ? 'High Evidence Integrity' : (score >= 45 ? 'Moderate / Gaps Present' : 'Critical Discrepancies Detected');
+      document.getElementById('health-grade-text').innerText = grade;
+
+      const docCount = (c.documents || []).length;
+      const contradictionCount = (c.findings || []).filter(f => f.finding_type === 'CONTRADICTION').length;
+      const gapCount = (c.findings || []).filter(f => f.finding_type === 'GAP').length;
+
+      document.getElementById('health-breakdown').innerHTML = `
+        <span>📁 Documents: <strong>${docCount}</strong></span>
+        <span>⚡ Contradictions: <strong style="color:${contradictionCount>0?'var(--status-rejected)':'var(--status-approved)'}">${contradictionCount}</strong></span>
+        <span>📋 Gaps: <strong style="color:${gapCount>0?'var(--status-request-info)':'var(--status-approved)'}">${gapCount}</strong></span>
+      `;
+    }
+
+    function renderContradictions(c) {
+      const container = document.getElementById('contradictions-container');
+      const contradictions = (c.findings || []).filter(f => f.finding_type === 'CONTRADICTION');
+      const badge = document.getElementById('contradiction-count-badge');
+
+      if (contradictions.length > 0) {
+        badge.style.display = 'inline-block';
+        badge.innerText = `${contradictions.length} Conflict(s)`;
+        container.innerHTML = contradictions.map(f => `
+          <div class="contradiction-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <strong style="color:var(--status-rejected); font-size:1rem;">⚠️ ${f.title}</strong>
+              <span class="badge badge-risk-high">${f.severity || 'CRITICAL'}</span>
+            </div>
+            <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:0.6rem;">${f.description}</p>
+            
+            <div class="compare-grid">
+              <div class="compare-box">
+                <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Source A: ${f.source_a || 'Document A'}</div>
+                <div style="font-weight:700; font-size:1.05rem; color:#fff; margin-top:0.2rem;">${f.value_a || 'N/A'}</div>
+              </div>
+              <div class="compare-box source-b">
+                <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Source B: ${f.source_b || 'Document B'}</div>
+                <div style="font-weight:700; font-size:1.05rem; color:#fff; margin-top:0.2rem;">${f.value_b || 'N/A'}</div>
+              </div>
+            </div>
+
+            <div style="font-size:0.8rem; color:#fca5a5; margin-top:0.4rem;">
+              <strong>Impact:</strong> ${f.impact || 'Causes timeline anomaly.'}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        badge.style.display = 'none';
+        container.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.5rem; color:var(--status-approved); font-size:0.92rem; padding:0.5rem 0;">
+            <span>✓</span> All submitted documents exhibit consistent dates, vehicle registrations, and claim descriptions. No cross-document contradictions detected.
+          </div>
+        `;
+      }
+    }
+
+    function renderGaps(c) {
+      const container = document.getElementById('gaps-container');
+      const gaps = (c.findings || []).filter(f => f.finding_type === 'GAP');
+      const badge = document.getElementById('gap-count-badge');
+
+      if (gaps.length > 0) {
+        badge.style.display = 'inline-block';
+        badge.innerText = `${gaps.length} Missing`;
+        container.innerHTML = gaps.map(g => `
+          <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.25); border-radius:var(--radius-sm); padding:0.85rem; margin-bottom:0.6rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">
+              <strong style="color:var(--status-request-info); font-size:0.95rem;">📋 ${g.title}</strong>
+              <span class="badge badge-request-info">${g.severity}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.35rem;">${g.description}</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">
+              <strong>Why it matters:</strong> ${g.impact}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        badge.style.display = 'none';
+        container.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.5rem; color:var(--status-approved); font-size:0.92rem; padding:0.5rem 0;">
+            <span>✓</span> All primary mandatory documents (Claim Form, Police FIR, Repair Estimate, DL, RC) are accounted for in the claim dossier.
+          </div>
+        `;
+      }
+    }
+
+    function renderExtractedFacts(c) {
+      const tbody = document.getElementById('facts-tbody');
+      const facts = c.extracted_facts || [];
+
+      if (facts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No facts extracted yet. Upload files to parse.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = facts.map(f => `
+        <tr>
+          <td><code style="color:var(--primary); font-weight:600;">${f.field_name}</code></td>
+          <td style="font-weight:700;">${f.field_value}</td>
+          <td><span style="font-size:0.85rem; color:var(--text-secondary);">${f.document_name}</span></td>
+          <td><span class="badge" style="background:rgba(255,255,255,0.05);">${f.source_page}</span></td>
+          <td><span style="color:var(--status-approved); font-size:0.8rem; font-weight:600;">${f.confidence}</span></td>
+          <td style="font-size:0.8rem; color:var(--text-muted); max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${f.raw_snippet}">
+            "${f.raw_snippet || 'Direct match'}"
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPolicyVerdicts(c) {
+      const container = document.getElementById('policy-clauses-container');
+      const policyFindings = (c.findings || []).filter(f => f.finding_type === 'POLICY_VERDICT');
+
+      if (policyFindings.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem;">No policy clauses matched for this claim type.</div>`;
+        return;
+      }
+
+      container.innerHTML = policyFindings.map(pf => {
+        let verdictBadge = '';
+        if (pf.value_a === 'SUPPORTED') verdictBadge = `<span class="badge badge-approved">✓ SUPPORTED</span>`;
+        else if (pf.value_a === 'BLOCKED') verdictBadge = `<span class="badge badge-rejected">✕ BLOCKED</span>`;
+        else if (pf.value_a === 'UNCERTAIN') verdictBadge = `<span class="badge badge-request-info">⚠ UNCERTAIN</span>`;
+        else verdictBadge = `<span class="badge" style="background:rgba(255,255,255,0.08);">${pf.value_a}</span>`;
+
+        return `
+          <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; margin-bottom:0.75rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <strong style="font-size:0.95rem; color:#fff;">${pf.source_a}: ${pf.title}</strong>
+              ${verdictBadge}
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem;">${pf.description}</p>
+            <div style="font-size:0.82rem; color:var(--text-muted); border-top:1px dashed rgba(255,255,255,0.08); padding-top:0.4rem;">
+              <strong>Claim Support / Grounding:</strong> ${pf.value_b}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAIRecommendation(c) {
+      const rec = c.ai_recommendation;
+      if (!rec) {
+        document.getElementById('ai-rec-badge').innerHTML = '<span class="badge">PENDING</span>';
+        document.getElementById('ai-reasoning').innerText = 'Analysis pending or in progress.';
+        return;
+      }
+
+      document.getElementById('ai-rec-badge').innerHTML = getStatusBadge(rec.recommendation);
+      document.getElementById('ai-confidence').innerText = rec.confidence || 'HIGH';
+      document.getElementById('ai-reasoning').innerText = rec.reasoning || 'No reasoning available.';
+
+      const forList = document.getElementById('ai-evidence-for');
+      forList.innerHTML = (rec.evidence_for && rec.evidence_for.length > 0)
+        ? rec.evidence_for.map(e => `<li>${e}</li>`).join('')
+        : `<li style="color:var(--text-muted);">None documented</li>`;
+
+      const againstList = document.getElementById('ai-evidence-against');
+      againstList.innerHTML = (rec.evidence_against && rec.evidence_against.length > 0)
+        ? rec.evidence_against.map(e => `<li>${e}</li>`).join('')
+        : `<li style="color:var(--text-muted);">None documented</li>`;
+    }
+
+    function renderWhatWouldChange(c) {
+      const list = document.getElementById('what-would-change-list');
+      const whatWouldChange = (c.ai_recommendation && c.ai_recommendation.what_would_change) || [];
+
+      if (whatWouldChange.length === 0) {
+        list.innerHTML = `<li style="color:var(--text-muted);">No counterfactual modifications identified.</li>`;
+        return;
+      }
+
+      list.innerHTML = whatWouldChange.map(item => `
+        <li style="line-height:1.4;">${item}</li>
+      `).join('');
+    }
+
+    function renderHumanDecision(c) {
+      const dec = c.human_decision;
+      const displayDiv = document.getElementById('existing-decision-display');
+
+      if (dec && dec.decision) {
+        displayDiv.style.display = 'block';
+        document.getElementById('display-human-badge').innerHTML = getStatusBadge(dec.decision);
+        document.getElementById('display-human-investigator').innerText = `Investigator: ${dec.investigator_name || 'Sarah Jenkins'}`;
+        document.getElementById('display-human-reason').innerText = `Reason: "${dec.reason || 'Decision recorded.'}"`;
+        document.getElementById('display-human-timestamp').innerText = `Recorded on: ${dec.timestamp || 'Just now'}`;
+
+        // Pre-select radio
+        const radios = document.getElementsByName('human_decision_radio');
+        for (const r of radios) {
+          if (r.value.toLowerCase() === dec.decision.toLowerCase()) {
+            r.checked = true;
+          }
+        }
+        if (dec.reason) document.getElementById('decision_reason').value = dec.reason;
+        if (dec.notes) document.getElementById('decision_notes').value = dec.notes;
+      } else {
+        displayDiv.style.display = 'none';
+      }
+    }
+
+    function renderDocuments(c) {
+      const container = document.getElementById('docs-container');
+      const docs = c.documents || [];
+
+      if (docs.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem;">No documents uploaded yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = docs.map(d => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm);">
+          <div>
+            <div style="font-weight:600; font-size:0.92rem;">📄 ${d.file_name}</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${d.file_type} • ${Math.round((d.file_size || 0) / 1024)} KB • ${d.uploaded_at || 'Attached'}</div>
+          </div>
+          <div>
+            <span class="badge badge-approved">PARSED ✓</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAuditTrail(c) {
+      const container = document.getElementById('audit-trail-container');
+      const trail = c.audit_trail || [];
+
+      if (trail.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem;">No audit events logged.</div>`;
+        return;
+      }
+
+      container.innerHTML = trail.map(a => `
+        <div style="display:flex; gap:0.75rem; font-size:0.82rem; border-left:2px solid var(--primary); padding-left:0.75rem;">
+          <div>
+            <div style="font-weight:700; color:#fff;">${a.event_type} (${a.actor})</div>
+            <div style="color:var(--text-secondary);">${a.description}</div>
+            <div style="color:var(--text-muted); font-size:0.75rem; margin-top:0.2rem;">${a.timestamp || ''}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function handleDecisionSubmit(e) {
+      e.preventDefault();
+      const radios = document.getElementsByName('human_decision_radio');
+      let selected = null;
+      for (const r of radios) {
+        if (r.checked) { selected = r.value; break; }
+      }
+      if (!selected) {
+        showToast('Please select a human decision option', 'error');
+        return;
+      }
+
+      const payload = {
+        decision: selected,
+        reason: document.getElementById('decision_reason').value.trim(),
+        notes: document.getElementById('decision_notes').value.trim(),
+        investigator_name: 'Sarah Jenkins (Senior Investigator)',
+      };
+
+      try {
+        const res = await fetchAPI(`/api/claims/${claimId}/decision`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.status === 'success') {
+          showToast(`Recorded official human decision: ${selected}`, 'success');
+          loadClaimDossier();
+        }
+      } catch (err) {
+        showToast('Failed to record human decision', 'error');
+      }
+    }
+
+    function updateSimDefaultValue() {
+      const field = document.getElementById('sim_fact_field').value;
+      const valInput = document.getElementById('sim_fact_value');
+      if (field === 'incident_date') valInput.value = '14/08/2026';
+      else if (field === 'commercial_use') valInput.value = 'Private Personal Transit Only';
+      else if (field === 'intoxication') valInput.value = 'Negative Alcohol / Zero BAC';
+      else if (field === 'claim_amount') valInput.value = '35000';
+    }
+
+    async function handleScenarioSimulate(e) {
+      e.preventDefault();
+      const field = document.getElementById('sim_fact_field').value;
+      const value = document.getElementById('sim_fact_value').value.trim();
+
+      const modFacts = {};
+      modFacts[field] = value;
+
+      try {
+        const res = await fetchAPI(`/api/claims/${claimId}/simulate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ modified_facts: modFacts }),
+        });
+
+        if (res.status === 'success') {
+          const sim = res.simulation;
+          // Display simulation banner
+          document.getElementById('simulation-banner').style.display = 'flex';
+          document.getElementById('sim-details').innerText = 
+            `Hypothetical Change: ${field} = "${value}" → Recalculated Outcome: ${sim.simulated_recommendation} (Risk: ${sim.simulated_risk})`;
+
+          // Update AI recommendation card with simulated values
+          document.getElementById('ai-rec-badge').innerHTML = getStatusBadge(sim.simulated_recommendation);
+          document.getElementById('ai-confidence').innerText = 'SIMULATED';
+          document.getElementById('ai-reasoning').innerText = sim.simulated_reasoning;
+
+          // Update health circle
+          const circle = document.getElementById('health-score-circle');
+          circle.innerText = sim.simulated_health_score;
+
+          showToast('Scenario simulated! Original claim remains unchanged.', 'info');
+        }
+      } catch (err) {
+        showToast('Simulation failed', 'error');
+      }
+    }
+
+    function exitSimulation() {
+      document.getElementById('simulation-banner').style.display = 'none';
+      loadClaimDossier();
+    }
+
+    async function triggerReanalysis() {
+      showToast('Re-running claim intelligence...', 'info');
+      try {
+        await fetchAPI(`/api/claims/${claimId}/analyze`, { method: 'POST' });
+        showToast('Analysis updated!', 'success');
+        loadClaimDossier();
+      } catch (err) {
+        showToast('Reanalysis failed', 'error');
+      }
+    }
+
+    async function uploadAdditionalFiles() {
+      const input = document.getElementById('modal-file-input');
+      if (!input.files || input.files.length === 0) {
+        showToast('Select at least one file to upload', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      for (const f of input.files) {
+        formData.append('files', f);
+      }
+
+      try {
+        showToast('Uploading & parsing documents...', 'info');
+        const res = await fetch(`/api/claims/${claimId}/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          showToast(`Uploaded ${data.uploaded.length} document(s) & extracted facts!`, 'success');
+          document.getElementById('add-docs-modal').style.display = 'none';
+          loadClaimDossier();
+        }
+      } catch (err) {
+        showToast('Upload failed', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadClaimDossier();
+      updateSimDefaultValue();
+    });
+  </script>
+</body>
+</html>

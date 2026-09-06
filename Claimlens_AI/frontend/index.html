@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClaimLens_AI — Intelligent Insurance Claims Evidence Review</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/" class="nav-link active">Home</a></li>
+      <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+      <li><a href="/policy-library" class="nav-link">Policy Library</a></li>
+      <li><a href="/login" class="nav-link">Login</a></li>
+      <li><a href="/dashboard" class="nav-cta-btn">Open Investigator Workspace →</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="hero">
+    <h1>See the Evidence.<br><span>Understand the Claim.</span></h1>
+    <div class="hero-tag" style="margin-top: 1rem; margin-bottom: 1.5rem;">AI-Powered Motor Insurance Evidence Intelligence</div>
+    <p class="hero-desc">
+      Instant evidence extraction, contradiction detection, and policy-grounded decision support for insurance investigators.
+    </p>
+  </header>
+
+  <!-- PROBLEM STATEMENT & PARADIGM -->
+  <main class="container">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Why Traditional Claim Review Fails</h2>
+      <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto;">
+        Insurance claim investigators face fragmented documents, delayed notices, and buried policy exclusions.
+      </p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">
+          <span>📄 Scattered Evidence</span>
+          <span style="font-size: 1.5rem;">📁</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Crucial facts are buried across police diary entries, handwritten garage quotes, and driver statements with zero unified cross-referencing.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>⚠️ Unnoticed Contradictions</span>
+          <span style="font-size: 1.5rem;">⚡</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Subtle date shifts between the claim form and the FIR (e.g. 12th Aug vs 14th Aug) frequently escape manual review, allowing fraudulent timelines to slip through.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>📜 Dense Policy Exclusions</span>
+          <span style="font-size: 1.5rem;">⚖️</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Determining whether commercial passenger use, unlicensed drivers, or delayed notice voids coverage requires time-consuming manual clause comparison.
+        </p>
+      </div>
+    </div>
+
+    <!-- HOW CLAIMLENS_AI WORKS -->
+    <div style="margin: 5rem 0 3rem; text-align: center;">
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">How ClaimLens_AI Solves It</h2>
+      <p style="color: var(--text-secondary);">An evidence-first, deterministic + RAG investigation workflow.</p>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <div style="font-weight:800; color:var(--primary); font-size: 1.3rem; margin-bottom: 0.5rem;">01. Ingestion</div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Multi-Document Parsing</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">Reads actual PDF, DOCX, and TXT files page-by-page, retaining source citations and exact snippets.</p>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:800; color:var(--accent-cyan); font-size: 1.3rem; margin-bottom: 0.5rem;">02. Detective</div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Contradiction Matrix</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">Cross-compares dates, vehicle registration numbers, damage locations, and amounts across all submitted files.</p>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:800; color:var(--accent-purple); font-size: 1.3rem; margin-bottom: 0.5rem;">03. RAG Retrieval</div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Policy Clause Verdicts</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">Vector search matches claim facts to policy sections, assigning verified verdicts: Supported, Blocked, or Uncertain.</p>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:800; color:var(--status-approved); font-size: 1.3rem; margin-bottom: 0.5rem;">04. Human-in-the-Loop</div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.4rem;">Independent Decision</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">AI recommendation and human investigator decision remain separate fields with complete audit history.</p>
+      </div>
+    </div>
+
+    <!-- DEMO CLAIMS SHOWCASE -->
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; margin: 4rem 0;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h3 style="font-size: 1.4rem; margin-bottom: 0.25rem;">Explore Preloaded Demo Claims</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">Test our engine across 5 realistic, internally consistent claim files.</p>
+        </div>
+        <a href="/dashboard" class="btn-primary">Launch Dashboard →</a>
+      </div>
+
+      <div class="grid-3">
+        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border-left: 3px solid var(--status-approved);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong>CLM-2026-001</strong>
+            <span class="badge badge-approved">APPROVE</span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Clean Claim: Divider collision, all dates match, sober police report, complete repair bill.</div>
+        </div>
+
+        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border-left: 3px solid var(--status-request-info);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong>CLM-2026-002</strong>
+            <span class="badge badge-request-info">REQUEST INFO</span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Missing Evidence: Hit-and-run without mandatory Police FIR or itemized garage quotation.</div>
+        </div>
+
+        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border-left: 3px solid var(--status-rejected);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong>CLM-2026-004</strong>
+            <span class="badge badge-rejected">REJECT</span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Policy Exclusion: Private car package policy used for unauthorized commercial passenger cab transit.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVESTIGATOR LOGIN SECTION AT THE BOTTOM OF HOMEPAGE -->
+    <div id="investigator-login-section" style="max-width: 480px; margin: 4rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="width: 48px; height: 48px; margin: 0 auto 0.75rem; border-radius: 50%; background: rgba(59, 130, 246, 0.15); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.5rem; font-weight: 800;">Investigator Sign In</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">Sign in to access active dossiers and the investigation queue</p>
+      </div>
+
+      <form onsubmit="handleHomeLogin(event)">
+        <div class="form-group">
+          <label for="home_username">Username</label>
+          <input type="text" id="home_username" required value="investigator">
+        </div>
+
+        <div class="form-group">
+          <label for="home_password">Password</label>
+          <input type="password" id="home_password" required value="claimlens2026">
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" id="home-login-btn">
+          Sign In to ClaimLens →
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+        Need an investigator credential? <a href="/signup" style="color: var(--primary); text-decoration: none; font-weight: 600;">Register here</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>ClaimLens_AI — Built for NexusTiq24 Hackathon (Track PS02)</p>
+      <p style="margin-top: 0.4rem; color: var(--text-muted);">See the Evidence. Understand the Claim. Real documents, real RAG, real intelligence.</p>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+  <script>
+    async function handleHomeLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('home_username').value.trim();
+      const password = document.getElementById('home_password').value.trim();
+      const btn = document.getElementById('home-login-btn');
+      btn.disabled = true;
+      btn.innerText = 'Signing In...';
+
+      try {
+        const res = await fetchAPI('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (res.status === 'success') {
+          showToast('Authenticated! Opening workspace...', 'success');
+          setTimeout(() => { window.location.href = '/dashboard'; }, 500);
+        }
+      } catch (err) {
+        showToast(err.message || 'Login failed', 'error');
+        btn.disabled = false;
+        btn.innerText = 'Sign In to ClaimLens →';
+      }
+    }
+  </script>
+</body>
+</html>

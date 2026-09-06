@@ -1,0 +1,9 @@
+MOTOR INSURANCE CLAIM FORM
+Claim ID: CLM-2026-003
+Policy No: POL-2024-OD-77219
+Insured: Vikram Malhotra
+Vehicle Reg No: MH-02-CB-1234
+Incident Date: 12/08/2026
+Place of Accident: Western Express Highway, Mumbai
+Claim Amount: INR 95,000.00
+Details: Rear-ended by a truck while slowing down at traffic signal on 12/08/2026 at 4:30 PM.

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investigator Profile — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+      <li><a href="/new-claim" class="nav-link">+ New Claim</a></li>
+      <li><a href="/policy-library" class="nav-link">Policy Library</a></li>
+      <li><a href="/profile" class="nav-link active">Profile</a></li>
+      <li><a href="/login" class="nav-link" style="color: var(--status-rejected);">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="max-width: 650px; margin-top: 3rem;">
+    <div class="card" style="padding: 2rem;">
+      <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+        <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent-purple)); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #fff;">
+          SJ
+        </div>
+        <div>
+          <h2 style="font-size: 1.5rem; font-weight: 800;">Sarah Jenkins</h2>
+          <span class="badge badge-approved">Senior Claims Auditor</span>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">investigator@claimlens.ai</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          <span style="color: var(--text-secondary); font-size: 0.9rem;">Department</span>
+          <strong style="font-size: 0.9rem;">Motor Own Damage & Special Investigation Unit (SIU)</strong>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          <span style="color: var(--text-secondary); font-size: 0.9rem;">Investigator ID</span>
+          <strong style="font-size: 0.9rem;">INV-2026-881</strong>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          <span style="color: var(--text-secondary); font-size: 0.9rem;">Assigned Region</span>
+          <strong style="font-size: 0.9rem;">National Motor Claims Division</strong>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+          <span style="color: var(--text-secondary); font-size: 0.9rem;">Session Status</span>
+          <span class="badge badge-approved">Active Session</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; justify-content: space-between;">
+        <a href="/dashboard" class="btn-primary">← Return to Dashboard</a>
+        <a href="/login" class="btn-outline" style="color: var(--status-rejected); border-color: rgba(239,68,68,0.3);">Logout</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

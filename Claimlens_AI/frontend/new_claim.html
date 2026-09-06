@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register New Claim — ClaimLens_AI</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand-container">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <circle cx="11" cy="11" r="3" fill="#06b6d4" stroke="#3b82f6" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">ClaimLens<span>_AI</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+      <li><a href="/new-claim" class="nav-link active">+ New Claim</a></li>
+      <li><a href="/policy-library" class="nav-link">Policy Library</a></li>
+      <li><a href="/profile" class="nav-link">Investigator</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="max-width: 900px;">
+    <div style="margin-bottom: 2rem;">
+      <a href="/dashboard" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">← Back to Dashboard</a>
+      <h1 style="font-size: 2rem; font-weight: 800; margin-top: 0.5rem;">Intake & Register New Claim</h1>
+      <p style="color: var(--text-secondary);">Enter the base policy declaration and upload multi-format claim documents.</p>
+    </div>
+
+    <form id="new-claim-form" onsubmit="handleClaimSubmit(event)">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+          1. Policy & Insured Particulars
+        </h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="policy_number">Policy Number *</label>
+            <input type="text" id="policy_number" required placeholder="e.g. POL-2025-OD-99120" value="POL-2026-OD-10550">
+          </div>
+
+          <div class="form-group">
+            <label for="insured_name">Insured Person's Full Name *</label>
+            <input type="text" id="insured_name" required placeholder="e.g. Rahul Sharma" value="Rahul Verma">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="vehicle_registration">Vehicle Registration Number *</label>
+            <input type="text" id="vehicle_registration" required placeholder="e.g. DL-01-AB-1234" value="KA-05-MM-3321">
+          </div>
+
+          <div class="form-group">
+            <label for="vehicle_model">Vehicle Make & Model *</label>
+            <input type="text" id="vehicle_model" required placeholder="e.g. Honda City ZX 1.5" value="Tata Harrier XZ+">
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+          2. Incident Declaration & Claim Value
+        </h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="incident_date">Date of Incident (DD/MM/YYYY) *</label>
+            <input type="text" id="incident_date" required placeholder="DD/MM/YYYY" value="22/08/2026">
+          </div>
+
+          <div class="form-group">
+            <label for="claim_amount">Estimated Claim Amount (INR) *</label>
+            <input type="number" id="claim_amount" required min="100" step="100" placeholder="e.g. 55000" value="65000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="incident_location">Location of Collision / Accident *</label>
+          <input type="text" id="incident_location" required placeholder="e.g. Ring Road Junction, Bengaluru" value="Outer Ring Road, Marathahalli, Bengaluru">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Narrative Description of Accident</label>
+          <textarea id="description" rows="3" placeholder="Brief description of collision event as stated by the insured...">Vehicle collided with a stationary road barrier after swerving to avoid an unlit barricade during night driving.</textarea>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">
+          3. Upload Claim Evidence Documents
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+          Upload actual claim documents (PDF, DOCX, TXT, or damage photos). Documents will be parsed immediately upon registration.
+        </p>
+
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+          <div style="font-weight: 600; margin-bottom: 0.25rem;">Click to browse or drag & drop files here</div>
+          <div style="color: var(--text-muted); font-size: 0.82rem;">Accepts PDF, DOCX, TXT, PNG, JPG (Claim Form, FIR, Garage Estimate, Driving License, RC)</div>
+          <input type="file" id="file-input" multiple style="display: none;" onchange="handleFileSelect(event)">
+        </div>
+
+        <div id="file-list" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+        <a href="/dashboard" class="btn-outline">Cancel</a>
+        <button type="submit" class="btn-primary" id="submit-btn">Register Claim & Start Intelligence Analysis →</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="/static/app.js"></script>
+  <script>
+    let selectedFiles = [];
+
+    function handleFileSelect(e) {
+      const files = Array.from(e.target.files);
+      selectedFiles = [...selectedFiles, ...files];
+      renderFileList();
+    }
+
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        selectedFiles = [...selectedFiles, ...Array.from(e.dataTransfer.files)];
+        renderFileList();
+      }
+    });
+
+    function renderFileList() {
+      const list = document.getElementById('file-list');
+      if (selectedFiles.length === 0) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = selectedFiles.map((f, idx) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span>📄</span>
+            <span style="font-weight: 500; font-size: 0.9rem;">${f.name}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">(${Math.round(f.size / 1024)} KB)</span>
+          </div>
+          <button type="button" onclick="removeFile(${idx})" style="background: none; border: none; color: var(--status-rejected); cursor: pointer; font-weight: bold;">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFile(idx) {
+      selectedFiles.splice(idx, 1);
+      renderFileList();
+    }
+
+    async function handleClaimSubmit(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Registering & Analyzing Claim...';
+
+      const payload = {
+        policy_number: document.getElementById('policy_number').value.trim(),
+        insured_name: document.getElementById('insured_name').value.trim(),
+        vehicle_registration: document.getElementById('vehicle_registration').value.trim(),
+        vehicle_model: document.getElementById('vehicle_model').value.trim(),
+        incident_date: document.getElementById('incident_date').value.trim(),
+        claim_amount: parseFloat(document.getElementById('claim_amount').value),
+        incident_location: document.getElementById('incident_location').value.trim(),
+        description: document.getElementById('description').value.trim(),
+      };
+
+      try {
+        const createRes = await fetchAPI('/api/claims', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (createRes.status === 'success') {
+          const claimId = createRes.claim.claim_id;
+
+          // If files were selected, upload and parse them
+          if (selectedFiles.length > 0) {
+            const formData = new FormData();
+            for (const f of selectedFiles) {
+              formData.append('files', f);
+            }
+            await fetch(`/api/claims/${claimId}/upload`, {
+              method: 'POST',
+              body: formData,
+            });
+          }
+
+          showToast(`Claim ${claimId} created successfully!`, 'success');
+          setTimeout(() => {
+            window.location.href = `/evidence-review/${claimId}`;
+          }, 600);
+        }
+      } catch (err) {
+        showToast(err.message || 'Failed to create claim', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Register Claim & Start Intelligence Analysis →';
+      }
+    }
+  </script>
+</body>
+</html>
